@@ -218,7 +218,9 @@ ARGS:
       ;; Write contents to output-file
       (write-region (point-min) (point-max) output-file)
       ;; bye-bye tmp buffer
-      (kill-buffer))))
+      (kill-buffer))
+    (delete-window)
+    ))
 
 
 ;; User config and other stuffs
