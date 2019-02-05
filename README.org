@@ -6,6 +6,7 @@
 * Table of Contents                                                :TOC_2_gh:
 - [[#installation][Installation]]
 - [[#modify-by-mephistommm][Modify By MephistoMMM]]
+  - [[#notes][notes]]
 - [[#options][Options]]
   - [[#for-highlightjs-user][For highlight.js user]]
   - [[#for-htmlize-user][For htmlize user]]
@@ -27,7 +28,7 @@
   Switch to your hexo blog directory and run:
 
   #+BEGIN_SRC sh
-    npm install https://github.com/mephis/hexo-renderer-org#master --save
+    npm install https://github.com/mpwang/hexo-renderer-org#master --save
   #+END_SRC
 
   Then restart your hexo server.
@@ -40,6 +41,19 @@ Now, hexo-renderer-org won't start a new emacs server process in daemonize mode.
      org:
        server_file: "~/.emacs.d/server/server"  # <----- this is default value
 #+END_SRC
+
+** notes
+For MacOS user, you may need to check $TMPDIR
+#+begin_src sh
+echo $TMPDIR
+/var/folders/q0/3jxnq5cj6dz7j8szf1h5hjsc0000gn/T/
+#+end_src
+
+and set server_file to something like:
+#+begin_src yaml
+    org:
+      server_file: "/var/folders/q0/3jxnq5cj6dz7j8szf1h5hjsc0000gn/T/emacs501/server"
+#+end_src
 
 * Options
 
