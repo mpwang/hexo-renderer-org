@@ -22,6 +22,7 @@
   - [[#how-can-i-add-line-number-on-src-block-][How can I add line-number on src-block ?]]
   - [[#i-dont-want-to-use-emacs-daemon][I don't want to use emacs daemon]]
   - [[#can-i-drag-and-drop-image-to-org-files-][Can I drag and drop image to org files ?]]
+  - [[#how-to-use-drag-and-drop-image-together-with-hexo-config-post_asset_folder-true][How to use drag and drop image together with hexo config post_asset_folder: true]]
 
 * Installation
 
@@ -242,3 +243,53 @@ Then add following to =.dir-locals.el= at the top of your hexo project:
 
                  )))))
 #+END_SRC
+** How to use drag and drop image together with hexo config post_asset_folder: true
+   By default, drag&drop feature of org-download will insert org file link like `file://....`.
+
+   Image will display correctly as inline image inside org-mode and article page, but exported
+   html image link is incorrect on archive or index pages.
+
+   turn on post_asset_folder in =_config.yml=
+   #+begin_src yaml
+   post_asset_folder: true
+   #+end_src
+
+   using following as you =.dir-locals.el= at the top of your hexo project:
+   #+begin_src emacs-lisp
+   ((nil .
+      ((eval .
+             (progn
+
+               ;; make drag-and-drop image save in the same name folder as org file
+               ;; ex: `aa-bb-cc.org' then save image test.png to `aa-bb-cc/test.png'
+               (defun my-org-download-method (link)
+                 (let ((filename
+                        (file-name-nondirectory
+                         (car (url-path-and-query
+                               (url-generic-parse-url link)))))
+                       (dirname (file-name-sans-extension buffer-file-name ) ))
+                   ;; if directory not exist, create it
+                   (unless (file-exists-p dirname)
+                     (make-directory dirname))
+                   ;; return the path to save the download files
+                   (expand-file-name filename dirname)))
+
+               ;; only modify `org-download-method' in this project
+               (setq-local org-download-method 'my-org-download-method)
+
+               ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+               ;; for using hexo config post_asset_folder: true             ;;
+               ;; https://hexo.io/docs/asset-folders.html#Post-Asset-Folder ;;
+               ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+               ;; only modify `org-download-link-format' in this project
+               (setq-local org-download-link-format "{%% asset_img %s %%}")
+
+               ;; only modify `org-download-abbreviate-filename-function' in
+               ;; this project
+               (setq-local org-download-abbreviate-filename-function #'file-name-nondirectory)
+               )))))   
+   #+end_src
+
+   This will give your correct exported html image link, but image will not show
+   inside org-mode as inline image.
