@@ -288,7 +288,7 @@ Then add following to =.dir-locals.el= at the top of your hexo project:
                ;; only modify `org-download-abbreviate-filename-function' in
                ;; this project
                (setq-local org-download-abbreviate-filename-function #'file-name-nondirectory)
-               )))))   
+               )))))
    #+end_src
 
    This will give your correct exported html image link, but image will not show
