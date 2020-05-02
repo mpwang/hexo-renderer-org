@@ -220,12 +220,15 @@
           (output-file  (or (plist-get args :output-file)      "")))
       ;; Export file content by ox-hexo.el
       (with-temp-buffer
-        ;; Insert input-file contents
-        (insert-file-contents file)
+	(cd (file-name-directory file))
+	;; Insert input-file contents
+	(insert-file-contents file)
         ;; Insert common options
         (hexo-renderer-org-insert-options hexo-renderer-org-common-block)
         ;; Export the org-mode file to HTML (default)
         (hexo-renderer-org-exporter)
+	;; replace out bibliography header if exist
+	(replace-string "<h1 class='org-ref-bib-h1'>Bibliography</h1>" "")
         ;; Write contents to output-file
         (write-region (point-min) (point-max) output-file)
         ;; bye-bye tmp buffer
